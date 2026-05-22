@@ -72,7 +72,7 @@ export default function AuthorOverview() {
             {/* Main Grid Layout */}
             <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
-                {/* 2/3 Column: Recent Queries */}
+                
                 <div className="lg:col-span-2">
                     <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden h-full flex flex-col">
                         <div className="p-6 border-b border-slate-100">
@@ -117,7 +117,7 @@ export default function AuthorOverview() {
                     </div>
                 </div>
 
-                {/* 1/3 Column: Quick Actions */}
+                
                 <div className="lg:col-span-1">
                     <div className="bg-slate-900 rounded-xl shadow-md p-6 text-white h-full flex flex-col">
                         <div>

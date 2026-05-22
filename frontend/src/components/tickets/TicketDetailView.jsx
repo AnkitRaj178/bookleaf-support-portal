@@ -219,8 +219,8 @@ export default function TicketDetailView({
                     </div>
                 </div>
             )}
-
-            <div className="h-8"></div> {/* Bottom spacer */}
+                 {/* Bottom spacer */}
+            <div className="h-8"></div>
         </div>
     );
 }

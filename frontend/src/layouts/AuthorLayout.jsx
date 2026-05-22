@@ -4,7 +4,7 @@ import { LogOut, Book, BookOpen, Send, Ticket, User, ChevronDown } from 'lucide-
 import api from '../utils/api';
 import toast from 'react-hot-toast';
 
-// ─── JWT payload decoder (no extra library) ───────────────────────────────────
+//JWT payload decoder 
 function decodeJwt(token) {
     try {
         const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
@@ -14,7 +14,7 @@ function decodeJwt(token) {
     }
 }
 
-// ─── Resolve user identity from sessionStorage + JWT fallback ──────────────────
+// Resolve user identity from sessionStorage + JWT fallback 
 function resolveUser() {
     const role  = sessionStorage.getItem('role')  || 'author';
     let   name  = sessionStorage.getItem('name')  || '';
@@ -66,7 +66,7 @@ const AuthorLayout = () => {
             const ticketsRes = await api.get('/tickets');
             setTickets(ticketsRes.data);
         } catch (error) {
-            // silently fail on background refresh
+            
         }
     }, []);
 
