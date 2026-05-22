@@ -85,7 +85,7 @@ One of the core requirements was making sure the app doesn't break if the AI API
 
 If the Gemini API fails, the service catches the error but intentionally *does not* throw an exception back to the controller (which would crash the entire ticket creation process). Instead, it returns a safe, hardcoded fallback object. It automatically sets the ticket priority to "Unassigned" and injects a `[SYSTEM WARNING]` into the draft response, alerting the admin that the AI failed due to high traffic. This guarantees that the author's ticket is always safely saved to the database and the operations team can just type out the response manually without the workflow breaking.
 
-## 🌟 Product Thinking & Extra Features
+##  Product Thinking & Extra Features
 
 Beyond the core requirements, I prioritized making the portal feel like a production-ready tool by focusing on edge cases, user workflows, and data integrity:
 
@@ -105,4 +105,3 @@ Since this was built within a 5-day timeline, I had to prioritize core functiona
 3. **Database Pagination:** The admin ticket queue currently fetches and loads every single ticket at once. If BookLeaf actually scaled this to their 22,000+ catalog, sending that much data would slow down the network and the browser. I would need to implement cursor-based pagination on the `/api/tickets` endpoint.
 4. **AI Knowledge Base Scaling:** Currently, the entire BookLeaf policy guide is passed as a static string into the LLM's system instructions. It works well because the provided rules are relatively short. However, if the company policy guide was 50 pages long, passing that on every query would waste a massive amount of tokens. I would eventually move the policies into a vector database and use RAG (Retrieval-Augmented Generation) so the AI only pulls the specific rules it needs for that exact ticket.
 
-5. 
