@@ -46,7 +46,7 @@ npm run dev
 
 This project implements a Domain-Grouped Architecture on the frontend to prevent component spaghetti, and a strict MVC pattern on the backend to separate concerns.
 
-```text
+```
 bookleaf-support-portal/
 ├── backend/
 │   ├── controllers/      # Route logic and database interactions
@@ -90,9 +90,24 @@ When both servers are running (usually on localhost:5000 and localhost:5173), yo
 *(Note: You can use any author email from the seeded JSON dataset. All passwords default to `password123`).*
 
 
+
+### 🧪 How to Test Real-Time Updates & RBAC
+
+To fully experience the near-real-time updates (powered by background polling) and the strict Role-Based Access Control, I highly recommend testing the portal using two side-by-side browser windows:
+
+1. **Window 1:** Log in using the **Author** test credentials.
+2. **Window 2 (Incognito/Different Browser):** Log in using the **Admin** test credentials.
+
+If you create a new support ticket in the Author window, you will see it automatically populate, be categorized by the AI, and update in the Admin queue without ever needing to refresh the Admin page.
+
+**A Note on the Unified Login:** You will notice that both Authors and Admins currently authenticate through the exact same login screen. For the scope of this 5-day MVP, utilizing a single authentication route allowed for faster delivery while still enforcing strict JWT-based role verification on the backend. However, in a true production environment, the Operations/Admin portal would be entirely decoupled. Admin login would be moved to a hidden, dedicated route (e.g., `/ops-auth`) and placed behind Enterprise SSO (like Google Workspace or Okta) to separate internal staff from public-facing users.
+
+
+
 ## 🔌 API Documentation
 
 For a detailed breakdown of all endpoints, authentication requirements, and AI service routes, please see the **[API Documentation](API_DOCS.md)**.
+
 
 
 ## Architecture Decisions
@@ -114,6 +129,7 @@ I used the Google Gemini SDK for the auto-classification and response drafting.
 * **Why I made this choice:** The most critical decision here was to keep the AI completely isolated on the backend inside a dedicated `aiService.js` file. The frontend has zero AI logic and no direct access to the LLM. I did this to ensure the `GEMINI_API_KEY` is never exposed to the client's browser bundle, which is a major security vulnerability.
 
 
+
 ## AI Integration Details
 
 The AI feature (powered by Google Gemini) acts as an assistant for the admin team to auto-classify incoming tickets, assign a priority score, and draft initial responses. All of this logic is kept strictly on the Node.js backend inside a dedicated `aiService.js` utility to keep the API key completely secure from the frontend.
@@ -130,6 +146,8 @@ To avoid wasting tokens and racking up API costs, I kept the data payload as sma
 One of the core requirements was making sure the app doesn't break if the AI API goes down, times out, or gets rate-limited. I wrapped the AI call in a `try/catch` block inside the service.
 
 If the Gemini API fails, the service catches the error but intentionally *does not* throw an exception back to the controller (which would crash the entire ticket creation process). Instead, it returns a safe, hardcoded fallback object. It automatically sets the ticket priority to "Unassigned" and injects a `[SYSTEM WARNING]` into the draft response, alerting the admin that the AI failed due to high traffic. This guarantees that the author's ticket is always safely saved to the database and the operations team can just type out the response manually without the workflow breaking.
+
+
 
 ## Product Thinking & Extra Features
 
