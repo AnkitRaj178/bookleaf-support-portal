@@ -72,19 +72,24 @@ bookleaf-support-portal/
     │   ├── App.jsx       # React Router setup
     │   └── main.jsx      # React DOM entry
 
-###  Test credentials
+
+
+
+### Test Credentials
+
 When both servers are running (usually on localhost:5000 and localhost:5173), you can use these accounts to test the role-based access control.
 
-Admin / Operations Team:
-* Email: admin@bookleaf.com
-* Password: admin123
+**Admin / Operations Team:**
+* **Email:** admin@bookleaf.com
+* **Password:** admin123
 
-Author Portal:
-* Email: rohit.kapoor@email.com
-* Password: password123
-(Note: You can use any author email from the seeded JSON dataset. All passwords default to password123).
+**Author Portal:**
+* **Email:** rohit.kapoor@email.com
+* **Password:** password123
 
-###  Architecture Decisions
+*(Note: You can use any author email from the seeded JSON dataset. All passwords default to `password123`).*
+
+### Architecture Decisions
 
 For this project, I chose the MERN stack (MongoDB, Express, React, Node.js). Since the 5-day timeline required balancing clean code with fast delivery, I made specific architectural choices to prioritize maintainability and security for the MVP.
 
@@ -98,7 +103,7 @@ The Node.js backend follows a strict separation of concerns, separating routing,
 * **Why I made this choice:** I wanted to make sure my database queries weren't mixed directly into the route definitions.
 * **Security & Auth:** I used JWT for authentication, storing the token in `sessionStorage` on the frontend so it clears when the tab closes. I built a custom middleware to handle Role-Based Access Control (RBAC). If an author tries to fetch tickets, the controller strictly filters by their decoded token ID. If an admin makes the same request, the middleware grants them global read/write access.
 
-##  AI Integration: The Air-Gap Approach
+## AI Integration: The Air-Gap Approach
 I used the Google Gemini SDK for the auto-classification and response drafting.
 * **Why I made this choice:** The most critical decision here was to keep the AI completely isolated on the backend inside a dedicated `aiService.js` file. The frontend has zero AI logic and no direct access to the LLM. I did this to ensure the `GEMINI_API_KEY` is never exposed to the client's browser bundle, which is a major security vulnerability.
 
@@ -123,7 +128,7 @@ One of the core requirements was making sure the app doesn't break if the AI API
 
 If the Gemini API fails, the service catches the error but intentionally *does not* throw an exception back to the controller (which would crash the entire ticket creation process). Instead, it returns a safe, hardcoded fallback object. It automatically sets the ticket priority to "Unassigned" and injects a `[SYSTEM WARNING]` into the draft response, alerting the admin that the AI failed due to high traffic. This guarantees that the author's ticket is always safely saved to the database and the operations team can just type out the response manually without the workflow breaking.
 
-##  Product Thinking & Extra Features
+## Product Thinking & Extra Features
 
 Beyond the core requirements, I prioritized making the portal feel like a production-ready tool by focusing on edge cases, user workflows, and data integrity:
 
@@ -143,4 +148,4 @@ Since this was built within a 5-day timeline, I had to prioritize core functiona
 3. **Database Pagination:** The admin ticket queue currently fetches and loads every single ticket at once. If BookLeaf actually scaled this to their 22,000+ catalog, sending that much data would slow down the network and the browser. I would need to implement cursor-based pagination on the `/api/tickets` endpoint.
 4. **AI Knowledge Base Scaling:** Currently, the entire BookLeaf policy guide is passed as a static string into the LLM's system instructions. It works well because the provided rules are relatively short. However, if the company policy guide was 50 pages long, passing that on every query would waste a massive amount of tokens. I would eventually move the policies into a vector database and use RAG (Retrieval-Augmented Generation) so the AI only pulls the specific rules it needs for that exact ticket.
 
-```
+
